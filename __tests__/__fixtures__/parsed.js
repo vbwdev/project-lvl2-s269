@@ -23,4 +23,4 @@ export default [
     secondConfigValue: true,
     isSame: false,
   },
-]
+];
