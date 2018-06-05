@@ -13,6 +13,9 @@
     "prepublishOnly": "npm run build",
     "test": "jest"
   },
+  "jest": {
+    "testRegex": "(/__tests__/.*\\.(test|spec))\\.jsx?$"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vbwdev/project-lvl2-s269.git"
