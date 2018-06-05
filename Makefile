@@ -10,5 +10,9 @@ publish:
 	npm publish
 	git push
 
-start:
+run:
 	npm run babel-node -- src/bin/gendiff.js
+
+build:
+	rm -rf dist
+	npm run build
