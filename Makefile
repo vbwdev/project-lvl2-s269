@@ -2,7 +2,7 @@ install:
 	npm install
 
 lint:
-	npm run eslint src
+	npm run eslint .
 
 publish:
 	@read -p "Enter type of version (major | minor | patch): " type; \
