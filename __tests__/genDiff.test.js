@@ -6,16 +6,12 @@ import parsedConfigs from './__fixtures__/parsed';
 import diffResult from './__fixtures__/diffResult';
 
 describe('genDiff tests', () => {
-  test('should work', () => {
+  test('genDiff should work', () => {
     expect(genDiff(firstConfig, secondConfig)).toBe(diffResult);
   });
 
   test('config parsing', () => {
-    expect(parseConfigs(
-      { ...firstConfig, ...secondConfig },
-      firstConfig,
-      secondConfig,
-    )).toEqual(parsedConfigs);
+    expect(parseConfigs(firstConfig, secondConfig)).toEqual(parsedConfigs);
   });
 
   test('diff building', () => {

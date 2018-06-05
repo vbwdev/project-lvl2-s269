@@ -1,5 +1,6 @@
-export const parseConfigs = (mergedConfigs, firstConfigContent, secondConfigContent) => (
-  Object.keys(mergedConfigs).reduce((acc, key) => {
+export const parseConfigs = (firstConfigContent, secondConfigContent) => {
+  const mergedConfigsKeys = Object.keys({ ...firstConfigContent, ...secondConfigContent });
+  return mergedConfigsKeys.reduce((acc, key) => {
     const firstConfigValue = firstConfigContent[key];
     const secondConfigValue = secondConfigContent[key];
     return [
@@ -11,8 +12,8 @@ export const parseConfigs = (mergedConfigs, firstConfigContent, secondConfigCont
         isSame: firstConfigValue === secondConfigValue,
       },
     ];
-  }, [])
-);
+  }, []);
+};
 
 export const buildDiff = (parsedConfigs) => {
   const resultArray = parsedConfigs.reduce((acc, item) => {
@@ -32,12 +33,10 @@ export const buildDiff = (parsedConfigs) => {
   }, []);
 
   return `{\n  ${resultArray.join('\n  ')}\n}`;
-
 };
 
 const genDiff = (firstConfigContent, secondConfigContent) => {
-  const mergedConfigs = { ...firstConfigContent, ...secondConfigContent };
-  const parsedConfigs = parseConfigs(mergedConfigs, firstConfigContent, secondConfigContent);
+  const parsedConfigs = parseConfigs(firstConfigContent, secondConfigContent);
   return buildDiff(parsedConfigs);
 };
 
