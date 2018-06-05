@@ -15,24 +15,26 @@ export const parseConfigs = (firstConfigContent, secondConfigContent) => {
   }, []);
 };
 
+const stringTemplate = (sign, key, value) => `  ${sign} ${key}: ${value}\n`;
+const unchangedStringTemplate = (...args) => stringTemplate(' ', ...args);
+const deletedStringTemplate = (...args) => stringTemplate('-', ...args);
+const addedStringTemplate = (...args) => stringTemplate('+', ...args);
+
 export const buildDiff = (parsedConfigs) => {
-  const resultArray = parsedConfigs.reduce((acc, item) => {
-    if (item.isSame) {
-      return [...acc, `  ${item.key}: ${item.firstConfigValue}`];
-    }
-
-    if (item.firstConfigValue && item.secondConfigValue) {
-      return [...acc, `+ ${item.key}: ${item.secondConfigValue}`, `- ${item.key}: ${item.firstConfigValue}`];
-    }
-
-    if (item.firstConfigValue) {
-      return [...acc, `- ${item.key}: ${item.firstConfigValue}`];
-    }
-
-    return [...acc, `+ ${item.key}: ${item.secondConfigValue}`];
-  }, []);
-
-  return `{\n  ${resultArray.join('\n  ')}\n}`;
+  const resultArray = parsedConfigs
+    .reduce((acc, {
+      key, firstConfigValue, secondConfigValue, isSame,
+    }) => (
+      isSame
+        ? [...acc, unchangedStringTemplate(key, firstConfigValue)]
+        : [
+          ...acc,
+          secondConfigValue && addedStringTemplate(key, secondConfigValue),
+          firstConfigValue && deletedStringTemplate(key, firstConfigValue),
+        ]
+    ), [])
+    .filter(str => str);
+  return `{\n${resultArray.join('')}}`;
 };
 
 const genDiff = (firstConfigContent, secondConfigContent) => {
