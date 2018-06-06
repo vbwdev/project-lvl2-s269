@@ -1,11 +1,12 @@
 import fs from 'fs';
 import path from 'path';
+import _ from 'lodash';
 import { safeLoad as yamlParse } from 'js-yaml';
 import { parse as iniParse } from 'ini';
 
 export const parseConfigs = (firstConfigContent, secondConfigContent) => {
-  const mergedConfigsKeys = Object.keys({ ...firstConfigContent, ...secondConfigContent });
-  return mergedConfigsKeys.reduce((acc, key) => {
+  const configsKeys = _.union(_.keys(firstConfigContent), _.keys(secondConfigContent));
+  return configsKeys.reduce((acc, key) => {
     const firstConfigValue = firstConfigContent[key];
     const secondConfigValue = secondConfigContent[key];
     return [
