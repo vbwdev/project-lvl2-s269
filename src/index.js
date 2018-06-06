@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 export const parseConfigs = (firstConfigContent, secondConfigContent) => {
   const mergedConfigsKeys = Object.keys({ ...firstConfigContent, ...secondConfigContent });
   return mergedConfigsKeys.reduce((acc, key) => {
@@ -37,7 +39,9 @@ export const buildDiff = (parsedConfigs) => {
   return `{\n${resultArray.join('')}}`;
 };
 
-const genDiff = (firstConfigContent, secondConfigContent) => {
+const genDiff = (firstConfigPath, secondConfigPath) => {
+  const firstConfigContent = JSON.parse(fs.readFileSync(firstConfigPath));
+  const secondConfigContent = JSON.parse(fs.readFileSync(secondConfigPath));
   const parsedConfigs = parseConfigs(firstConfigContent, secondConfigContent);
   return buildDiff(parsedConfigs);
 };
