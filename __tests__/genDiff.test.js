@@ -12,6 +12,10 @@ const testFormats = {
     before: `${testsPath}before.yml`,
     after: `${testsPath}after.yml`,
   },
+  ini: {
+    before: `${testsPath}before.ini`,
+    after: `${testsPath}after.ini`,
+  },
 };
 
 describe('genDiff tests', () => {
