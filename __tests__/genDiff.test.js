@@ -1,20 +1,10 @@
-import genDiff, { parseConfigs, buildDiff } from '../src';
+import fs from 'fs';
+import genDiff from '../src';
 
-import firstConfig from './__fixtures__/before.json';
-import secondConfig from './__fixtures__/after.json';
-import parsedConfigs from './__fixtures__/parsed';
-import diffResult from './__fixtures__/diffResult';
+const diffResult = fs.readFileSync('./__tests__/__fixtures__/diffResult.txt', 'utf8');
 
 describe('genDiff tests', () => {
-  test('genDiff should work', () => {
-    expect(genDiff(firstConfig, secondConfig)).toBe(diffResult);
-  });
-
-  test('config parsing', () => {
-    expect(parseConfigs(firstConfig, secondConfig)).toEqual(parsedConfigs);
-  });
-
-  test('diff building', () => {
-    expect(buildDiff(parsedConfigs)).toBe(diffResult);
+  test('genDiff should work with json', () => {
+    expect(genDiff('./__tests__/__fixtures__/before.json', './__tests__/__fixtures__/after.json')).toBe(diffResult);
   });
 });

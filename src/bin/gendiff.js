@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-import fs from 'fs';
 
 import genDiff from '..';
 
@@ -11,9 +10,7 @@ program
   .description('Compares two configuration files and shows a difference.')
   .option('-f, --format [type]', 'Output format')
   .action((firstConfig, secondConfig) => {
-    const firstConfigContent = JSON.parse(fs.readFileSync(firstConfig));
-    const secondConfigContent = JSON.parse(fs.readFileSync(secondConfig));
-    const configsDiff = genDiff(firstConfigContent, secondConfigContent);
+    const configsDiff = genDiff(firstConfig, secondConfig);
     console.log(configsDiff);
   })
   .parse(process.argv);
