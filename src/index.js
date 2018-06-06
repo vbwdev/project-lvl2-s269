@@ -4,18 +4,18 @@ import _ from 'lodash';
 import { safeLoad as yamlParse } from 'js-yaml';
 import { parse as iniParse } from 'ini';
 
-export const parseConfigs = (firstConfigContent, secondConfigContent) => {
-  const configsKeys = _.union(_.keys(firstConfigContent), _.keys(secondConfigContent));
-  return configsKeys.reduce((acc, key) => {
-    const firstConfigValue = firstConfigContent[key];
-    const secondConfigValue = secondConfigContent[key];
+export const generateDiff = (firstContent, secondContent) => {
+  const keys = _.union(_.keys(firstContent), _.keys(secondContent));
+  return keys.reduce((acc, key) => {
+    const firstValue = firstContent[key];
+    const secondValue = secondContent[key];
     return [
       ...acc,
       {
         key,
-        firstConfigValue,
-        secondConfigValue,
-        isSame: firstConfigValue === secondConfigValue,
+        firstValue,
+        secondValue,
+        isSame: firstValue === secondValue,
       },
     ];
   }, []);
@@ -26,17 +26,17 @@ const unchangedStringTemplate = (...args) => stringTemplate(' ', ...args);
 const deletedStringTemplate = (...args) => stringTemplate('-', ...args);
 const addedStringTemplate = (...args) => stringTemplate('+', ...args);
 
-export const buildDiff = (parsedConfigs) => {
-  const resultArray = parsedConfigs
+export const buildDiffStrings = (diff) => {
+  const resultArray = diff
     .reduce((acc, {
-      key, firstConfigValue, secondConfigValue, isSame,
+      key, firstValue, secondValue, isSame,
     }) => (
       isSame
-        ? [...acc, unchangedStringTemplate(key, firstConfigValue)]
+        ? [...acc, unchangedStringTemplate(key, firstValue)]
         : [
           ...acc,
-          secondConfigValue && addedStringTemplate(key, secondConfigValue),
-          firstConfigValue && deletedStringTemplate(key, firstConfigValue),
+          secondValue && addedStringTemplate(key, secondValue),
+          firstValue && deletedStringTemplate(key, firstValue),
         ]
     ), [])
     .filter(str => str);
@@ -58,13 +58,13 @@ const getParser = (extension) => {
   return parser;
 };
 
-const genDiff = (firstConfigPath, secondConfigPath) => {
-  const firstConfigExtension = path.extname(firstConfigPath);
-  const secondConfigExtension = path.extname(secondConfigPath);
-  const firstConfigContent = getParser(firstConfigExtension)(fs.readFileSync(firstConfigPath, 'utf8'));
-  const secondConfigContent = getParser(secondConfigExtension)(fs.readFileSync(secondConfigPath, 'utf8'));
-  const parsedConfigs = parseConfigs(firstConfigContent, secondConfigContent);
-  return buildDiff(parsedConfigs);
+const genDiff = (firstPath, secondPath) => {
+  const firstExtension = path.extname(firstPath);
+  const secondExtension = path.extname(secondPath);
+  const firstContent = getParser(firstExtension)(fs.readFileSync(firstPath, 'utf8'));
+  const secondContent = getParser(secondExtension)(fs.readFileSync(secondPath, 'utf8'));
+  const generatedDiff = generateDiff(firstContent, secondContent);
+  return buildDiffStrings(generatedDiff);
 };
 
 export default genDiff;
