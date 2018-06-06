@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { safeLoad as yamlParse } from 'js-yaml';
+import { parse as iniParse } from 'ini';
 
 export const parseConfigs = (firstConfigContent, secondConfigContent) => {
   const mergedConfigsKeys = Object.keys({ ...firstConfigContent, ...secondConfigContent });
@@ -45,6 +46,7 @@ const parsers = {
   '.json': JSON.parse,
   '.yaml': yamlParse,
   '.yml': yamlParse,
+  '.ini': iniParse,
 };
 
 const getParser = (extension) => {
@@ -58,8 +60,8 @@ const getParser = (extension) => {
 const genDiff = (firstConfigPath, secondConfigPath) => {
   const firstConfigExtension = path.extname(firstConfigPath);
   const secondConfigExtension = path.extname(secondConfigPath);
-  const firstConfigContent = getParser(firstConfigExtension)(fs.readFileSync(firstConfigPath));
-  const secondConfigContent = getParser(secondConfigExtension)(fs.readFileSync(secondConfigPath));
+  const firstConfigContent = getParser(firstConfigExtension)(fs.readFileSync(firstConfigPath, 'utf8'));
+  const secondConfigContent = getParser(secondConfigExtension)(fs.readFileSync(secondConfigPath, 'utf8'));
   const parsedConfigs = parseConfigs(firstConfigContent, secondConfigContent);
   return buildDiff(parsedConfigs);
 };
