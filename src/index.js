@@ -1,8 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import _ from 'lodash';
-import { safeLoad as yamlParse } from 'js-yaml';
-import { parse as iniParse } from 'ini';
+import getParser from './getParser';
 
 export const generateDiff = (firstContent, secondContent) => {
   const keys = _.union(_.keys(firstContent), _.keys(secondContent));
@@ -41,21 +40,6 @@ export const buildDiffStrings = (diff) => {
     ), [])
     .filter(str => str);
   return `{\n${resultArray.join('')}}`;
-};
-
-const parsers = {
-  '.json': JSON.parse,
-  '.yaml': yamlParse,
-  '.yml': yamlParse,
-  '.ini': iniParse,
-};
-
-const getParser = (extension) => {
-  const parser = parsers[extension];
-  if (!parser) {
-    throw new Error(`Unknown file extension '${extension}'`);
-  }
-  return parser;
 };
 
 const genDiff = (firstPath, secondPath) => {
