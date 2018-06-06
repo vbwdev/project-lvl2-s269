@@ -1,4 +1,6 @@
 import fs from 'fs';
+import path from 'path';
+import { safeLoad as yamlParse } from 'js-yaml';
 
 export const parseConfigs = (firstConfigContent, secondConfigContent) => {
   const mergedConfigsKeys = Object.keys({ ...firstConfigContent, ...secondConfigContent });
@@ -39,9 +41,25 @@ export const buildDiff = (parsedConfigs) => {
   return `{\n${resultArray.join('')}}`;
 };
 
+const parsers = {
+  '.json': JSON.parse,
+  '.yaml': yamlParse,
+  '.yml': yamlParse,
+};
+
+const getParser = (extension) => {
+  const parser = parsers[extension];
+  if (!parser) {
+    throw new Error(`Unknown file extension '${extension}'`);
+  }
+  return parser;
+};
+
 const genDiff = (firstConfigPath, secondConfigPath) => {
-  const firstConfigContent = JSON.parse(fs.readFileSync(firstConfigPath));
-  const secondConfigContent = JSON.parse(fs.readFileSync(secondConfigPath));
+  const firstConfigExtension = path.extname(firstConfigPath);
+  const secondConfigExtension = path.extname(secondConfigPath);
+  const firstConfigContent = getParser(firstConfigExtension)(fs.readFileSync(firstConfigPath));
+  const secondConfigContent = getParser(secondConfigExtension)(fs.readFileSync(secondConfigPath));
   const parsedConfigs = parseConfigs(firstConfigContent, secondConfigContent);
   return buildDiff(parsedConfigs);
 };

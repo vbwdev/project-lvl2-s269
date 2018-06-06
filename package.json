@@ -1,6 +1,6 @@
 {
   "name": "hexlet-gendiff-by-vbwdev",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Hexlet training project",
   "main": "dist/index.js",
   "bin": {
@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "commander": "^2.15.1",
+    "js-yaml": "^3.12.0",
     "lodash": "^4.17.10"
   }
 }
