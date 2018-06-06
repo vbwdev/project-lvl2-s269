@@ -2,7 +2,6 @@ import fs from 'fs';
 import genDiff from '../src';
 
 const testsPath = '__tests__/__fixtures__/';
-const diffResult = fs.readFileSync(`${testsPath}diffResult.txt`, 'utf8');
 const testFormats = {
   json: {
     before: `${testsPath}before.json`,
@@ -19,6 +18,7 @@ const testFormats = {
 };
 
 describe('genDiff tests', () => {
+  const diffResult = fs.readFileSync(`${testsPath}diffResult.txt`, 'utf8');
   Object.keys(testFormats).forEach((format) => {
     test(`genDiff should work with ${format}`, () => {
       expect(genDiff(testFormats[format].before, testFormats[format].after)).toBe(diffResult);
