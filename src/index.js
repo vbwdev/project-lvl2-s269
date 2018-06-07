@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import _ from 'lodash';
-import getParser from './getParser';
+import getParser from './parsers';
 
 export const generateDiff = (firstContent, secondContent) => {
   const keys = _.union(_.keys(firstContent), _.keys(secondContent));
