@@ -55,11 +55,16 @@ export const renderDiff = (diff) => {
   return `{\n${resultArray.join('')}}`;
 };
 
+const prepareContent = (filePath) => {
+  const extension = path.extname(filePath);
+  const content = fs.readFileSync(filePath, 'utf8');
+  const parse = getParser(extension);
+  return parse(content);
+};
+
 const genDiff = (firstPath, secondPath) => {
-  const firstExtension = path.extname(firstPath);
-  const secondExtension = path.extname(secondPath);
-  const firstContent = getParser(firstExtension)(fs.readFileSync(firstPath, 'utf8'));
-  const secondContent = getParser(secondExtension)(fs.readFileSync(secondPath, 'utf8'));
+  const firstContent = prepareContent(firstPath);
+  const secondContent = prepareContent(secondPath);
   const generatedDiff = generateDiff(firstContent, secondContent);
   return renderDiff(generatedDiff);
 };
