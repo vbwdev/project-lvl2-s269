@@ -6,19 +6,19 @@ const testFormats = {
   json: {
     before: `${testsPath}before.json`,
     after: `${testsPath}after.json`,
-    nestedBefore: `${testsPath}nestedBfore.json`,
+    nestedBefore: `${testsPath}nestedBefore.json`,
     nestedAfter: `${testsPath}nestedAfter.json`,
   },
   yaml: {
     before: `${testsPath}before.yml`,
     after: `${testsPath}after.yml`,
-    nestedBefore: `${testsPath}nestedBfore.yml`,
+    nestedBefore: `${testsPath}nestedBefore.yml`,
     nestedAfter: `${testsPath}nestedAfter.yml`,
   },
   ini: {
     before: `${testsPath}before.ini`,
     after: `${testsPath}after.ini`,
-    nestedBefore: `${testsPath}nestedBfore.ini`,
+    nestedBefore: `${testsPath}nestedBefore.ini`,
     nestedAfter: `${testsPath}nestedAfter.ini`,
   },
 };
