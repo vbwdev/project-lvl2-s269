@@ -29,16 +29,29 @@ export const renderDiff = (diff) => {
   const resultArray = diff
     .reduce((acc, {
       key, firstValue, secondValue, isSame,
-    }) => (
-      isSame
-        ? [...acc, unchangedStringTemplate(key, firstValue)]
-        : [
+    }) => {
+      if (isSame) {
+        return [...acc, unchangedStringTemplate(key, firstValue)];
+      }
+
+      if (firstValue && secondValue) {
+        return [
           ...acc,
-          secondValue && addedStringTemplate(key, secondValue),
-          firstValue && deletedStringTemplate(key, firstValue),
-        ]
-    ), [])
-    .filter(str => str);
+          addedStringTemplate(key, secondValue),
+          deletedStringTemplate(key, firstValue),
+        ];
+      }
+
+      if (firstValue) {
+        return [...acc, deletedStringTemplate(key, firstValue)];
+      }
+
+      if (secondValue) {
+        return [...acc, addedStringTemplate(key, secondValue)];
+      }
+
+      return acc;
+    }, []);
   return `{\n${resultArray.join('')}}`;
 };
 
