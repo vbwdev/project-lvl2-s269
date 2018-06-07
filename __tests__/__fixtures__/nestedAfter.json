@@ -2,7 +2,13 @@
   "common": {
     "setting1": "Value 1",
     "setting3": {
-      "key": "value"
+      "key": "value",
+      "but": {
+        "there": "mmm",
+        "deep": {
+          "what": "object"
+        }
+      }
     },
     "setting4": "blah blah",
     "setting5": {

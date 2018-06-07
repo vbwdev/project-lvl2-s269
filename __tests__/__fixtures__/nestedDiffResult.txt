@@ -4,6 +4,12 @@
       - setting2: 200
       + setting3: {
             key: value
+            but: {
+                there: mmm
+                deep: {
+                    what: object
+                }
+            }
         }
       - setting3: true
         setting6: {
