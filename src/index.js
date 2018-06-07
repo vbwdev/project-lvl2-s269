@@ -25,7 +25,7 @@ const unchangedStringTemplate = (...args) => stringTemplate(' ', ...args);
 const deletedStringTemplate = (...args) => stringTemplate('-', ...args);
 const addedStringTemplate = (...args) => stringTemplate('+', ...args);
 
-export const buildDiffStrings = (diff) => {
+export const renderDiff = (diff) => {
   const resultArray = diff
     .reduce((acc, {
       key, firstValue, secondValue, isSame,
@@ -48,7 +48,7 @@ const genDiff = (firstPath, secondPath) => {
   const firstContent = getParser(firstExtension)(fs.readFileSync(firstPath, 'utf8'));
   const secondContent = getParser(secondExtension)(fs.readFileSync(secondPath, 'utf8'));
   const generatedDiff = generateDiff(firstContent, secondContent);
-  return buildDiffStrings(generatedDiff);
+  return renderDiff(generatedDiff);
 };
 
 export default genDiff;
