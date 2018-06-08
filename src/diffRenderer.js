@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import { STATUS } from './constants';
 
 const getSpaces = depth => '    '.repeat(depth);
 
@@ -20,27 +19,27 @@ const renderAddedString = (...args) => renderString('+', ...args);
 const renderDiff = (diffInput) => {
   const iter = (diff, depth = 0) => {
     const strings = diff.reduce((acc, {
-      key, status, value, children,
+      key, status, newValue, oldValue, children,
     }) => {
       switch (status) {
-        case (STATUS.NOT_CHANGED_NESTED):
+        case 'nested':
           return [...acc, renderUnchangedString(key, iter(children, depth + 1), depth)];
 
-        case (STATUS.CHANGED):
+        case 'changed':
           return [
             ...acc,
-            renderAddedString(key, value[1], depth),
-            renderDeletedString(key, value[0], depth),
+            renderAddedString(key, newValue, depth),
+            renderDeletedString(key, oldValue, depth),
           ];
 
-        case (STATUS.ADDED):
-          return [...acc, renderAddedString(key, value, depth)];
+        case 'added':
+          return [...acc, renderAddedString(key, newValue, depth)];
 
-        case (STATUS.DELETED):
-          return [...acc, renderDeletedString(key, value, depth)];
+        case 'deleted':
+          return [...acc, renderDeletedString(key, oldValue, depth)];
 
-        case (STATUS.NOT_CHANGED):
-          return [...acc, renderUnchangedString(key, value, depth)];
+        case 'unchanged':
+          return [...acc, renderUnchangedString(key, newValue, depth)];
 
         default:
           throw new Error(`Not supported status ${status}`);

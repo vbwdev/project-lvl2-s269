@@ -1,8 +1,11 @@
 /* eslint-disable consistent-return */
 import _ from 'lodash';
-import { STATUS } from './constants';
 
 const generateDiff = (firstContent, secondContent) => {
+  if (!_.isPlainObject(firstContent) || !_.isPlainObject(secondContent)) {
+    return [];
+  }
+
   const prepareDiff = (key, firstValue, secondValue) => {
     const hasFirstValue = _.has(firstContent, key);
     const hasSecondValue = _.has(secondContent, key);
@@ -10,7 +13,9 @@ const generateDiff = (firstContent, secondContent) => {
     if (_.isPlainObject(firstValue) && _.isPlainObject(secondValue)) {
       return {
         key,
-        status: STATUS.NOT_CHANGED_NESTED,
+        status: 'nested',
+        oldValue: firstValue,
+        newValue: secondValue,
         children: generateDiff(firstValue, secondValue),
       };
     }
@@ -18,32 +23,40 @@ const generateDiff = (firstContent, secondContent) => {
     if (hasFirstValue && hasSecondValue && firstValue === secondValue) {
       return {
         key,
-        status: STATUS.NOT_CHANGED,
-        value: firstValue,
+        status: 'unchanged',
+        oldValue: firstValue,
+        newValue: secondValue,
+        children: generateDiff(firstValue, secondValue),
       };
     }
 
     if (hasFirstValue && hasSecondValue && firstValue !== secondValue) {
       return {
         key,
-        status: STATUS.CHANGED,
-        value: [firstValue, secondValue],
+        status: 'changed',
+        oldValue: firstValue,
+        newValue: secondValue,
+        children: generateDiff(firstValue, secondValue),
       };
     }
 
-    if (hasFirstValue) {
+    if (hasFirstValue && !hasSecondValue) {
       return {
         key,
-        status: STATUS.DELETED,
-        value: firstValue,
+        status: 'deleted',
+        oldValue: firstValue,
+        newValue: secondValue,
+        children: generateDiff(firstValue, secondValue),
       };
     }
 
-    if (hasSecondValue) {
+    if (!hasFirstValue && hasSecondValue) {
       return {
         key,
-        status: STATUS.ADDED,
-        value: secondValue,
+        status: 'added',
+        oldValue: firstValue,
+        newValue: secondValue,
+        children: generateDiff(firstValue, secondValue),
       };
     }
   };
