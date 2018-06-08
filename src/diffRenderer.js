@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return, array-callback-return */
 import _ from 'lodash';
 import { STATUS } from './constants';
 
