@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return, array-callback-return */
 import _ from 'lodash';
 import { STATUS } from './constants';
 
@@ -23,28 +22,28 @@ const renderDiff = (diffInput) => {
     const strings = diff.reduce((acc, {
       key, status, value, children,
     }) => {
-      if (status === STATUS.NOT_CHANGED_NESTED) {
-        return [...acc, renderUnchangedString(key, iter(children, depth + 1), depth)];
-      }
+      switch (status) {
+        case (STATUS.NOT_CHANGED_NESTED):
+          return [...acc, renderUnchangedString(key, iter(children, depth + 1), depth)];
 
-      if (status === STATUS.CHANGED) {
-        return [
-          ...acc,
-          renderAddedString(key, value[1], depth),
-          renderDeletedString(key, value[0], depth),
-        ];
-      }
+        case (STATUS.CHANGED):
+          return [
+            ...acc,
+            renderAddedString(key, value[1], depth),
+            renderDeletedString(key, value[0], depth),
+          ];
 
-      if (status === STATUS.ADDED) {
-        return [...acc, renderAddedString(key, value, depth)];
-      }
+        case (STATUS.ADDED):
+          return [...acc, renderAddedString(key, value, depth)];
 
-      if (status === STATUS.DELETED) {
-        return [...acc, renderDeletedString(key, value, depth)];
-      }
+        case (STATUS.DELETED):
+          return [...acc, renderDeletedString(key, value, depth)];
 
-      if (status === STATUS.NOT_CHANGED) {
-        return [...acc, renderUnchangedString(key, value, depth)];
+        case (STATUS.NOT_CHANGED):
+          return [...acc, renderUnchangedString(key, value, depth)];
+
+        default:
+          throw new Error(`Not supported status ${status}`);
       }
     }, []);
     return `{\n${strings.join('')}${getSpaces(depth)}}`;
