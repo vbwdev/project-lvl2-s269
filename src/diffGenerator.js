@@ -9,7 +9,7 @@ const generateDiff = (firstContent, secondContent) => {
     if (_.isPlainObject(firstValue) && _.isPlainObject(secondValue)) {
       return {
         key,
-        status: STATUS.NOT_CHANGED,
+        status: STATUS.NOT_CHANGED_NESTED,
         children: generateDiff(firstValue, secondValue),
       };
     }

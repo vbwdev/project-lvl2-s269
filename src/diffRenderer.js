@@ -5,24 +5,25 @@ const getSpaces = depth => '    '.repeat(depth);
 
 const renderString = (sign, key, value, depth) => {
   if (_.isPlainObject(value)) {
-    const objectValues = _.keys(value).map(objectKey => renderString(' ', objectKey, value[objectKey], depth + 1));
-    return renderString(sign, key, `{\n${objectValues.join('')}${getSpaces(depth + 1)}}`, depth);
+    const objectDepth = depth + 1;
+    const objectValues = _.keys(value)
+      .map(objectKey => renderString(' ', objectKey, value[objectKey], objectDepth))
+      .join('');
+    return renderString(sign, key, `{\n${objectValues}${getSpaces(objectDepth)}}`, depth);
   }
-
   return `${getSpaces(depth)}  ${sign} ${key}: ${value}\n`;
 };
 const renderUnchangedString = (...args) => renderString(' ', ...args);
 const renderDeletedString = (...args) => renderString('-', ...args);
 const renderAddedString = (...args) => renderString('+', ...args);
 
-
-const renderDiff = (input) => {
-  const prepareDiff = (diff, depth = 0) => {
+const renderDiff = (diffInput) => {
+  const iter = (diff, depth = 0) => {
     const strings = diff.reduce((acc, {
       key, status, value, children,
     }) => {
-      if (children) {
-        return [...acc, renderUnchangedString(key, prepareDiff(children, depth + 1), depth)];
+      if (status === STATUS.NOT_CHANGED_NESTED) {
+        return [...acc, renderUnchangedString(key, iter(children, depth + 1), depth)];
       }
 
       if (status === STATUS.CHANGED) {
@@ -48,7 +49,7 @@ const renderDiff = (input) => {
     return `{\n${strings.join('')}${getSpaces(depth)}}`;
   };
 
-  return prepareDiff(input);
+  return iter(diffInput, 0);
 };
 
 export default renderDiff;
