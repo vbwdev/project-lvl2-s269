@@ -31,19 +31,8 @@ const renderers = {
   }),
 };
 
-const getRenderer = (type) => {
-  const render = renderers[type];
-  if (!render) {
-    throw new Error(`No renderer for type '${type}'`);
-  }
-  return render;
-};
-
 const renderDiffIter = diff =>
-  diff.map((item) => {
-    const render = getRenderer(item.type);
-    return render(item, renderDiffIter);
-  }, {});
+  diff.map(item => renderers[item.type](item, renderDiffIter), {});
 
 const renderDiff = diff => JSON.stringify(renderDiffIter(diff));
 
