@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 import _ from 'lodash';
 
 const statuses = [
@@ -25,6 +24,14 @@ const statuses = [
   },
 ];
 
+const getStatus = (first, second, key) => {
+  const { status } = _.find(statuses, ({ check }) => check(first, second, key));
+  if (!status) {
+    throw new Error('No suitable status found');
+  }
+  return status;
+};
+
 const generateDiff = (firstContent, secondContent) => {
   if (!_.isPlainObject(firstContent) || !_.isPlainObject(secondContent)) {
     return [];
@@ -32,14 +39,17 @@ const generateDiff = (firstContent, secondContent) => {
 
   const keys = _.union(_.keys(firstContent), _.keys(secondContent));
   return keys.reduce((acc, key) => {
-    const { status } = _.find(statuses, ({ check }) => check(firstContent, secondContent, key));
-    return [...acc, {
-      key,
-      status,
-      oldValue: firstContent[key],
-      newValue: secondContent[key],
-      children: generateDiff(firstContent[key], secondContent[key]),
-    }];
+    const status = getStatus(firstContent, secondContent, key);
+    return [
+      ...acc,
+      {
+        key,
+        status,
+        oldValue: firstContent[key],
+        newValue: secondContent[key],
+        children: generateDiff(firstContent[key], secondContent[key]),
+      },
+    ];
   }, []);
 };
 
