@@ -1,47 +1,47 @@
 const renderers = {
   nested: ({ key, children }, process) => ({
-    status: 'nested',
+    type: 'nested',
     key,
     children: process(children),
   }),
 
   changed: ({ key, newValue, oldValue }) => ({
-    status: 'changed',
+    type: 'changed',
     key,
     oldValue,
     newValue,
   }),
 
   added: ({ key, newValue: value }) => ({
-    status: 'added',
+    type: 'added',
     key,
     value,
   }),
 
   deleted: ({ key, oldValue: value }) => ({
-    status: 'deleted',
+    type: 'deleted',
     key,
     value,
   }),
 
   unchanged: ({ key, newValue: value }) => ({
-    status: 'unchanged',
+    type: 'unchanged',
     key,
     value,
   }),
 };
 
-const getRenderer = (status) => {
-  const render = renderers[status];
+const getRenderer = (type) => {
+  const render = renderers[type];
   if (!render) {
-    throw new Error(`No renderer for status '${status}'`);
+    throw new Error(`No renderer for type '${type}'`);
   }
   return render;
 };
 
 const renderDiffIter = diff =>
   diff.map((item) => {
-    const render = getRenderer(item.status);
+    const render = getRenderer(item.type);
     return render(item, renderDiffIter);
   }, {});
 

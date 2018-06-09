@@ -1,35 +1,35 @@
 import _ from 'lodash';
 
-const statuses = [
+const types = [
   {
-    status: 'nested',
+    type: 'nested',
     check: (first, second, key) =>
       _.has(first, key) && _.has(second, key) && _.isPlainObject(first[key]) && _.isPlainObject(second[key]),
   },
   {
-    status: 'unchanged',
+    type: 'unchanged',
     check: (first, second, key) => _.has(first, key) && _.has(second, key) && first[key] === second[key],
   },
   {
-    status: 'changed',
+    type: 'changed',
     check: (first, second, key) => _.has(first, key) && _.has(second, key) && first[key] !== second[key],
   },
   {
-    status: 'deleted',
+    type: 'deleted',
     check: (first, second, key) => _.has(first, key) && !_.has(second, key),
   },
   {
-    status: 'added',
+    type: 'added',
     check: (first, second, key) => !_.has(first, key) && _.has(second, key),
   },
 ];
 
-const getStatus = (first, second, key) => {
-  const { status } = _.find(statuses, ({ check }) => check(first, second, key));
-  if (!status) {
-    throw new Error('No suitable status found');
+const getType = (first, second, key) => {
+  const { type } = _.find(types, ({ check }) => check(first, second, key));
+  if (!type) {
+    throw new Error('No suitable type found');
   }
-  return status;
+  return type;
 };
 
 const generateDiff = (firstContent, secondContent) => {
@@ -39,12 +39,12 @@ const generateDiff = (firstContent, secondContent) => {
 
   const keys = _.union(_.keys(firstContent), _.keys(secondContent));
   return keys.reduce((acc, key) => {
-    const status = getStatus(firstContent, secondContent, key);
+    const type = getType(firstContent, secondContent, key);
     return [
       ...acc,
       {
         key,
-        status,
+        type,
         oldValue: firstContent[key],
         newValue: secondContent[key],
         children: generateDiff(firstContent[key], secondContent[key]),
