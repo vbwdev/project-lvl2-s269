@@ -55,3 +55,23 @@ describe('genDiff tests with plain output format', () => {
     });
   });
 });
+
+
+describe('genDiff tests with json output format', () => {
+  const diffResult = JSON.parse(fs.readFileSync(`${testsPath}diffResultJson.json`, 'utf8'));
+  // Ini parser interpretate all numeric values as strings
+  const iniDiffResult = JSON.parse(fs.readFileSync(`${testsPath}iniDiffResultJson.json`, 'utf8'));
+  const nestedDiffResult = JSON.parse(fs.readFileSync(`${testsPath}nestedDiffResultJson.json`, 'utf8'));
+
+  Object.keys(testFormats).forEach((format) => {
+    test(`genDiff should work with ${format}`, () => {
+      expect(genDiff(testFormats[format].before, testFormats[format].after, 'json'))
+        .toEqual(format === 'ini' ? iniDiffResult : diffResult);
+    });
+
+    test(`genDiff should work with nested ${format}`, () => {
+      expect(genDiff(testFormats[format].nestedBefore, testFormats[format].nestedAfter, 'json'))
+        .toEqual(nestedDiffResult);
+    });
+  });
+});
