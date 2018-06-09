@@ -1,0 +1,38 @@
+[
+  {
+    "status": "unchanged",
+    "key": "host",
+    "value": "hexlet.io"
+  },
+  {
+    "status": "changed",
+    "key": "timeout",
+    "oldValue": "50",
+    "newValue": "20"
+  },
+  {
+    "status": "deleted",
+    "key": "proxy",
+    "value": "123.234.53.22"
+  },
+  {
+    "status": "deleted",
+    "key": "count",
+    "value": "0"
+  },
+  {
+    "status": "unchanged",
+    "key": "children",
+    "value": null
+  },
+  {
+    "status": "added",
+    "key": "verbose",
+    "value": true
+  },
+  {
+    "status": "added",
+    "key": "isLast",
+    "value": false
+  }
+]
