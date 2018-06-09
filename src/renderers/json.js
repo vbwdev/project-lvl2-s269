@@ -45,6 +45,6 @@ const renderDiffIter = diff =>
     return render(item, renderDiffIter);
   }, {});
 
-const renderDiff = diff => renderDiffIter(diff);
+const renderDiff = diff => JSON.stringify(renderDiffIter(diff));
 
 export default renderDiff;
