@@ -3,7 +3,7 @@ import path from 'path';
 
 import getParser from './parsers';
 import generateDiff from './diffGenerator';
-import render from './renderer';
+import render from './renderers';
 
 const prepareContent = (filePath) => {
   const extension = path.extname(filePath);
