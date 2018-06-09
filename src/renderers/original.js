@@ -14,18 +14,18 @@ const renderString = (sign, key, value, depth) => {
 };
 
 const renderers = {
-  nested: (item, depth, process) => renderString(' ', item.key, process(item.children, depth + 1), depth),
+  nested: ({ key, value }, depth, process) => renderString(' ', key, process(value, depth + 1), depth),
 
-  changed: (item, depth) => [
-    renderString('+', item.key, item.newValue, depth),
-    renderString('-', item.key, item.oldValue, depth),
+  changed: ({ key, value: { oldValue, newValue } }, depth) => [
+    renderString('+', key, newValue, depth),
+    renderString('-', key, oldValue, depth),
   ].join(''),
 
-  added: (item, depth) => renderString('+', item.key, item.newValue, depth),
+  added: ({ key, value }, depth) => renderString('+', key, value, depth),
 
-  deleted: (item, depth) => renderString('-', item.key, item.oldValue, depth),
+  deleted: ({ key, value }, depth) => renderString('-', key, value, depth),
 
-  unchanged: (item, depth) => renderString(' ', item.key, item.newValue, depth),
+  unchanged: ({ key, value }, depth) => renderString(' ', key, value, depth),
 };
 
 const getRenderer = (type) => {
