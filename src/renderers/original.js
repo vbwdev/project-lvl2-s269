@@ -14,31 +14,31 @@ const renderString = (sign, key, value, depth) => {
 };
 
 const renderers = {
-  nested: (item, depth, process) => renderString(' ', item.key, process(item.children, depth + 1), depth),
+  nested: ({ key, children }, depth, process) => renderString(' ', key, process(children, depth + 1), depth),
 
-  changed: (item, depth) => [
-    renderString('+', item.key, item.newValue, depth),
-    renderString('-', item.key, item.oldValue, depth),
+  changed: ({ key, oldValue, newValue }, depth) => [
+    renderString('+', key, newValue, depth),
+    renderString('-', key, oldValue, depth),
   ].join(''),
 
-  added: (item, depth) => renderString('+', item.key, item.newValue, depth),
+  added: ({ key, value }, depth) => renderString('+', key, value, depth),
 
-  deleted: (item, depth) => renderString('-', item.key, item.oldValue, depth),
+  deleted: ({ key, value }, depth) => renderString('-', key, value, depth),
 
-  unchanged: (item, depth) => renderString(' ', item.key, item.newValue, depth),
+  unchanged: ({ key, value }, depth) => renderString(' ', key, value, depth),
 };
 
-const getRenderer = (status) => {
-  const render = renderers[status];
+const getRenderer = (type) => {
+  const render = renderers[type];
   if (!render) {
-    throw new Error(`No renderer for status '${status}'`);
+    throw new Error(`No renderer for type '${type}'`);
   }
   return render;
 };
 
 const renderDiffIter = (diff, depth = 0) => {
   const strings = diff.map((item) => {
-    const render = getRenderer(item.status);
+    const render = getRenderer(item.type);
     return render(item, depth, renderDiffIter);
   }, []);
   return renderObjectInner(strings, depth);

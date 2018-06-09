@@ -16,25 +16,25 @@ const renderers = {
   changed: ({ key, oldValue, newValue }, parents) =>
     `Property ${renderName(parents, key)} was updated from ${renderValue(oldValue)} to ${renderValue(newValue)}`,
 
-  added: ({ key, newValue }, parents) =>
-    `Property ${renderName(parents, key)} was added with ${renderValue(newValue, true)}`,
+  added: ({ key, value }, parents) =>
+    `Property ${renderName(parents, key)} was added with ${renderValue(value, true)}`,
 
   deleted: ({ key }, parents) => `Property ${renderName(parents, key)} was removed`,
 
   unchanged: () => {},
 };
 
-const getRenderer = (status) => {
-  const render = renderers[status];
+const getRenderer = (type) => {
+  const render = renderers[type];
   if (!render) {
-    throw new Error(`No renderer for status '${status}'`);
+    throw new Error(`No renderer for type '${type}'`);
   }
   return render;
 };
 
 const renderDiffIter = (diff, parents = []) =>
   diff.reduce((acc, item) => {
-    const render = getRenderer(item.status);
+    const render = getRenderer(item.type);
     const renderedItem = render(item, parents, renderDiffIter);
     return renderedItem ? [...acc, renderedItem] : acc;
   }, []);

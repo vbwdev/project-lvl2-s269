@@ -1,20 +1,20 @@
 [
   {
-    "status": "nested",
+    "type": "nested",
     "key": "common",
     "children": [
       {
-        "status": "unchanged",
+        "type": "unchanged",
         "key": "setting1",
         "value": "Value 1"
       },
       {
-        "status": "deleted",
+        "type": "deleted",
         "key": "setting2",
         "value": "200"
       },
       {
-        "status": "changed",
+        "type": "changed",
         "key": "setting3",
         "oldValue": true,
         "newValue": {
@@ -28,28 +28,28 @@
         }
       },
       {
-        "status": "nested",
+        "type": "nested",
         "key": "setting6",
         "children": [
           {
-            "status": "unchanged",
+            "type": "unchanged",
             "key": "key",
             "value": "value"
           },
           {
-            "status": "added",
+            "type": "added",
             "key": "ops",
             "value": "vops"
           }
         ]
       },
       {
-        "status": "added",
+        "type": "added",
         "key": "setting4",
         "value": "blah blah"
       },
       {
-        "status": "added",
+        "type": "added",
         "key": "setting5",
         "value": {
           "key5": "value5"
@@ -58,22 +58,22 @@
     ]
   },
   {
-    "status": "nested",
+    "type": "nested",
     "key": "group1",
     "children": [
       {
-        "status": "changed",
+        "type": "changed",
         "key": "baz",
         "newValue": "bars",
         "oldValue": "bas"
       },
       {
-        "status": "unchanged",
+        "type": "unchanged",
         "key": "foo",
         "value": "bar"
       },
       {
-        "status": "changed",
+        "type": "changed",
         "key": "nest",
         "newValue": "str",
         "oldValue": {
@@ -83,14 +83,14 @@
     ]
   },
   {
-    "status": "deleted",
+    "type": "deleted",
     "key": "group2",
     "value": {
       "abc": "12345"
     }
   },
   {
-    "status": "added",
+    "type": "added",
     "key": "group3",
     "value": {
       "fee": "100500"

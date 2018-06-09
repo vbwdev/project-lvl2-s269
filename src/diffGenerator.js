@@ -1,55 +1,48 @@
 import _ from 'lodash';
 
-const statuses = [
+const propertyActions = [
   {
-    status: 'nested',
+    type: 'nested',
     check: (first, second, key) =>
       _.has(first, key) && _.has(second, key) && _.isPlainObject(first[key]) && _.isPlainObject(second[key]),
+    process: (first, second, func) => ({ children: func(first, second) }),
   },
   {
-    status: 'unchanged',
+    type: 'unchanged',
     check: (first, second, key) => _.has(first, key) && _.has(second, key) && first[key] === second[key],
+    process: first => ({ value: first }),
   },
   {
-    status: 'changed',
+    type: 'changed',
     check: (first, second, key) => _.has(first, key) && _.has(second, key) && first[key] !== second[key],
+    process: (first, second) => ({ oldValue: first, newValue: second }),
   },
   {
-    status: 'deleted',
+    type: 'deleted',
     check: (first, second, key) => _.has(first, key) && !_.has(second, key),
+    process: first => ({ value: first }),
   },
   {
-    status: 'added',
+    type: 'added',
     check: (first, second, key) => !_.has(first, key) && _.has(second, key),
+    process: (first, second) => ({ value: second }),
   },
 ];
 
-const getStatus = (first, second, key) => {
-  const { status } = _.find(statuses, ({ check }) => check(first, second, key));
-  if (!status) {
-    throw new Error('No suitable status found');
+const getPropertyAction = (first, second, key) => {
+  const type = _.find(propertyActions, ({ check }) => check(first, second, key));
+  if (!type) {
+    throw new Error('No suitable type found');
   }
-  return status;
+  return type;
 };
 
 const generateDiff = (firstContent, secondContent) => {
-  if (!_.isPlainObject(firstContent) || !_.isPlainObject(secondContent)) {
-    return [];
-  }
-
   const keys = _.union(_.keys(firstContent), _.keys(secondContent));
-  return keys.reduce((acc, key) => {
-    const status = getStatus(firstContent, secondContent, key);
-    return [
-      ...acc,
-      {
-        key,
-        status,
-        oldValue: firstContent[key],
-        newValue: secondContent[key],
-        children: generateDiff(firstContent[key], secondContent[key]),
-      },
-    ];
+  return keys.map((key) => {
+    const { type, process } = getPropertyAction(firstContent, secondContent, key);
+    const processedData = process(firstContent[key], secondContent[key], generateDiff);
+    return { key, type, ...processedData };
   }, []);
 };
 
