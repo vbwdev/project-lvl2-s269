@@ -47,11 +47,11 @@ describe('genDiff tests with plain output format', () => {
 
   Object.keys(testFormats).forEach((format) => {
     test(`genDiff should work with ${format}`, () => {
-      expect(genDiff(testFormats[format].before, testFormats[format].after)).toBe(diffResult);
+      expect(genDiff(testFormats[format].before, testFormats[format].after, 'plain')).toBe(diffResult);
     });
 
     test(`genDiff should work with nested ${format}`, () => {
-      expect(genDiff(testFormats[format].nestedBefore, testFormats[format].nestedAfter))
+      expect(genDiff(testFormats[format].nestedBefore, testFormats[format].nestedAfter, 'plain'))
         .toBe(nestedDiffResult);
     });
   });
