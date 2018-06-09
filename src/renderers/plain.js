@@ -16,7 +16,7 @@ const renderers = {
   changed: ({ key, oldValue, newValue }, parents) =>
     `Property ${renderName(parents, key)} was updated from ${renderValue(oldValue)} to ${renderValue(newValue)}`,
 
-  added: ({ key, newValue}, parents) =>
+  added: ({ key, newValue }, parents) =>
     `Property ${renderName(parents, key)} was added with ${renderValue(newValue, true)}`,
 
   deleted: ({ key }, parents) => `Property ${renderName(parents, key)} was removed`,

@@ -40,7 +40,6 @@ describe('genDiff tests with original output format', () => {
 });
 
 
-
 describe('genDiff tests with plain output format', () => {
   const diffResult = fs.readFileSync(`${testsPath}diffResultPlain.txt`, 'utf8');
   const nestedDiffResult = fs.readFileSync(`${testsPath}nestedDiffResultPlain.txt`, 'utf8');
