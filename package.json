@@ -1,6 +1,6 @@
 {
   "name": "hexlet-gendiff-by-vbwdev",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Hexlet training project",
   "main": "dist/index.js",
   "bin": {
