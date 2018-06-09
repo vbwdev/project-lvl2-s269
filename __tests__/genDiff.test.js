@@ -23,7 +23,7 @@ const testFormats = {
   },
 };
 
-describe('genDiff tests', () => {
+describe('genDiff tests with original output format', () => {
   const diffResult = fs.readFileSync(`${testsPath}diffResult.txt`, 'utf8');
   const nestedDiffResult = fs.readFileSync(`${testsPath}nestedDiffResult.txt`, 'utf8');
 
@@ -34,6 +34,23 @@ describe('genDiff tests', () => {
 
     test(`genDiff should work with nested ${format}`, () => {
       expect(genDiff(testFormats[format].nestedBefore, testFormats[format].nestedAfter))
+        .toBe(nestedDiffResult);
+    });
+  });
+});
+
+
+describe('genDiff tests with plain output format', () => {
+  const diffResult = fs.readFileSync(`${testsPath}diffResultPlain.txt`, 'utf8');
+  const nestedDiffResult = fs.readFileSync(`${testsPath}nestedDiffResultPlain.txt`, 'utf8');
+
+  Object.keys(testFormats).forEach((format) => {
+    test(`genDiff should work with ${format}`, () => {
+      expect(genDiff(testFormats[format].before, testFormats[format].after, 'plain')).toBe(diffResult);
+    });
+
+    test(`genDiff should work with nested ${format}`, () => {
+      expect(genDiff(testFormats[format].nestedBefore, testFormats[format].nestedAfter, 'plain'))
         .toBe(nestedDiffResult);
     });
   });

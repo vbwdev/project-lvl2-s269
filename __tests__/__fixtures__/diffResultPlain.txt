@@ -1,0 +1,5 @@
+Property 'timeout' was updated from '50' to '20'
+Property 'proxy' was removed
+Property 'count' was removed
+Property 'verbose' was added with value 'true'
+Property 'isLast' was added with value 'false'
