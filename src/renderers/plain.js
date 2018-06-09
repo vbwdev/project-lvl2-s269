@@ -11,13 +11,13 @@ const renderValue = (value, needPrefix) => {
 };
 
 const renderers = {
-  nested: ({ key, children }, parents, process) => process(children, [...parents, key], process),
+  nested: ({ key, value }, parents, process) => process(value, [...parents, key], process),
 
-  changed: ({ key, oldValue, newValue }, parents) =>
+  changed: ({ key, value: { oldValue, newValue }}, parents) =>
     `Property ${renderName(parents, key)} was updated from ${renderValue(oldValue)} to ${renderValue(newValue)}`,
 
-  added: ({ key, newValue }, parents) =>
-    `Property ${renderName(parents, key)} was added with ${renderValue(newValue, true)}`,
+  added: ({ key, value }, parents) =>
+    `Property ${renderName(parents, key)} was added with ${renderValue(value, true)}`,
 
   deleted: ({ key }, parents) => `Property ${renderName(parents, key)} was removed`,
 
