@@ -1,55 +1,49 @@
 import _ from 'lodash';
-import { STATUS } from './constants';
 
 const getSpaces = depth => '    '.repeat(depth);
+
+const renderObjectInner = (values, depth) => `{\n${values.join('')}${getSpaces(depth)}}`;
 
 const renderString = (sign, key, value, depth) => {
   if (_.isPlainObject(value)) {
     const objectDepth = depth + 1;
-    const objectValues = _.keys(value)
-      .map(objectKey => renderString(' ', objectKey, value[objectKey], objectDepth))
-      .join('');
-    return renderString(sign, key, `{\n${objectValues}${getSpaces(objectDepth)}}`, depth);
+    const renderedItems = _.keys(value).map(objectKey => renderString(' ', objectKey, value[objectKey], objectDepth));
+    return renderString(sign, key, renderObjectInner(renderedItems, objectDepth), depth);
   }
   return `${getSpaces(depth)}  ${sign} ${key}: ${value}\n`;
 };
-const renderUnchangedString = (...args) => renderString(' ', ...args);
-const renderDeletedString = (...args) => renderString('-', ...args);
-const renderAddedString = (...args) => renderString('+', ...args);
 
-const renderDiff = (diffInput) => {
-  const iter = (diff, depth = 0) => {
-    const strings = diff.reduce((acc, {
-      key, status, value, children,
-    }) => {
-      switch (status) {
-        case (STATUS.NOT_CHANGED_NESTED):
-          return [...acc, renderUnchangedString(key, iter(children, depth + 1), depth)];
+const renderers = {
+  nested: (item, depth, process) => renderString(' ', item.key, process(item.children, depth + 1), depth),
 
-        case (STATUS.CHANGED):
-          return [
-            ...acc,
-            renderAddedString(key, value[1], depth),
-            renderDeletedString(key, value[0], depth),
-          ];
+  changed: (item, depth) => [
+    renderString('+', item.key, item.newValue, depth),
+    renderString('-', item.key, item.oldValue, depth),
+  ].join(''),
 
-        case (STATUS.ADDED):
-          return [...acc, renderAddedString(key, value, depth)];
+  added: (item, depth) => renderString('+', item.key, item.newValue, depth),
 
-        case (STATUS.DELETED):
-          return [...acc, renderDeletedString(key, value, depth)];
+  deleted: (item, depth) => renderString('-', item.key, item.oldValue, depth),
 
-        case (STATUS.NOT_CHANGED):
-          return [...acc, renderUnchangedString(key, value, depth)];
-
-        default:
-          throw new Error(`Not supported status ${status}`);
-      }
-    }, []);
-    return `{\n${strings.join('')}${getSpaces(depth)}}`;
-  };
-
-  return iter(diffInput, 0);
+  unchanged: (item, depth) => renderString(' ', item.key, item.newValue, depth),
 };
+
+const getRenderer = (status) => {
+  const render = renderers[status];
+  if (!render) {
+    throw new Error(`No renderer for status '${status}'`);
+  }
+  return render;
+};
+
+const renderDiffIter = (diff, depth = 0) => {
+  const strings = diff.map((item) => {
+    const render = getRenderer(item.status);
+    return render(item, depth, renderDiffIter);
+  }, []);
+  return renderObjectInner(strings, depth);
+};
+
+const renderDiff = diff => renderDiffIter(diff, 0);
 
 export default renderDiff;
