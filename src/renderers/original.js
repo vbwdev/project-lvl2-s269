@@ -14,9 +14,9 @@ const renderString = (sign, key, value, depth) => {
 };
 
 const renderers = {
-  nested: ({ key, value }, depth, process) => renderString(' ', key, process(value, depth + 1), depth),
+  nested: ({ key, children }, depth, process) => renderString(' ', key, process(children, depth + 1), depth),
 
-  changed: ({ key, value: { oldValue, newValue } }, depth) => [
+  changed: ({ key, oldValue, newValue }, depth) => [
     renderString('+', key, newValue, depth),
     renderString('-', key, oldValue, depth),
   ].join(''),

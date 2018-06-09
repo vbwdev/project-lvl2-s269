@@ -1,11 +1,11 @@
 const renderers = {
-  nested: ({ key, value }, process) => ({
+  nested: ({ key, children }, process) => ({
     type: 'nested',
     key,
-    children: process(value),
+    children: process(children),
   }),
 
-  changed: ({ key, value: { newValue, oldValue } }) => ({
+  changed: ({ key, newValue, oldValue }) => ({
     type: 'changed',
     key,
     oldValue,

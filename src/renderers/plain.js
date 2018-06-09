@@ -11,9 +11,9 @@ const renderValue = (value, needPrefix) => {
 };
 
 const renderers = {
-  nested: ({ key, value }, parents, process) => process(value, [...parents, key], process),
+  nested: ({ key, children }, parents, process) => process(children, [...parents, key], process),
 
-  changed: ({ key, value: { oldValue, newValue }}, parents) =>
+  changed: ({ key, oldValue, newValue }, parents) =>
     `Property ${renderName(parents, key)} was updated from ${renderValue(oldValue)} to ${renderValue(newValue)}`,
 
   added: ({ key, value }, parents) =>

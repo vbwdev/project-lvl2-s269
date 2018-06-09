@@ -1,16 +1,16 @@
 import _ from 'lodash';
 
-const types = [
+const propertyActions = [
   {
     type: 'nested',
     check: (first, second, key) =>
       _.has(first, key) && _.has(second, key) && _.isPlainObject(first[key]) && _.isPlainObject(second[key]),
-    process: (first, second, func) => func(first, second),
+    process: (first, second, func) => ({ children: func(first, second) }),
   },
   {
     type: 'unchanged',
     check: (first, second, key) => _.has(first, key) && _.has(second, key) && first[key] === second[key],
-    process: _.identity,
+    process: first => ({ value: first }),
   },
   {
     type: 'changed',
@@ -20,17 +20,17 @@ const types = [
   {
     type: 'deleted',
     check: (first, second, key) => _.has(first, key) && !_.has(second, key),
-    process: _.identity,
+    process: first => ({ value: first }),
   },
   {
     type: 'added',
     check: (first, second, key) => !_.has(first, key) && _.has(second, key),
-    process: (first, second) => second,
+    process: (first, second) => ({ value: second }),
   },
 ];
 
-const getType = (first, second, key) => {
-  const type = _.find(types, ({ check }) => check(first, second, key));
+const getPropertyAction = (first, second, key) => {
+  const type = _.find(propertyActions, ({ check }) => check(first, second, key));
   if (!type) {
     throw new Error('No suitable type found');
   }
@@ -40,9 +40,9 @@ const getType = (first, second, key) => {
 const generateDiff = (firstContent, secondContent) => {
   const keys = _.union(_.keys(firstContent), _.keys(secondContent));
   return keys.map((key) => {
-    const { type, process } = getType(firstContent, secondContent, key);
-    const value = process(firstContent[key], secondContent[key], generateDiff);
-    return { key, type, value };
+    const { type, process } = getPropertyAction(firstContent, secondContent, key);
+    const processedData = process(firstContent[key], secondContent[key], generateDiff);
+    return { key, type, ...processedData };
   }, []);
 };
 
