@@ -1,8 +1,9 @@
-import { renderDiffOriginal, renderDiffPlain } from './renderers';
+import { renderDiffOriginal, renderDiffPlain, renderDiffJson } from './renderers';
 
 const renderers = {
   original: renderDiffOriginal,
   plain: renderDiffPlain,
+  json: renderDiffJson,
 };
 
 const render = (format, diff) => {
