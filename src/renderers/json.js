@@ -1,30 +1,30 @@
 const renderers = {
-  nested: ({ key, children }, process) => ({
+  nested: ({ key, value }, process) => ({
     type: 'nested',
     key,
-    children: process(children),
+    children: process(value),
   }),
 
-  changed: ({ key, newValue, oldValue }) => ({
+  changed: ({ key, value: { newValue, oldValue } }) => ({
     type: 'changed',
     key,
     oldValue,
     newValue,
   }),
 
-  added: ({ key, newValue: value }) => ({
+  added: ({ key, value }) => ({
     type: 'added',
     key,
     value,
   }),
 
-  deleted: ({ key, oldValue: value }) => ({
+  deleted: ({ key, value }) => ({
     type: 'deleted',
     key,
     value,
   }),
 
-  unchanged: ({ key, newValue: value }) => ({
+  unchanged: ({ key, value }) => ({
     type: 'unchanged',
     key,
     value,
