@@ -3,7 +3,7 @@ import path from 'path';
 
 import getParser from './parsers';
 import generateDiff from './diffGenerator';
-import renderDiff from './diffRenderer';
+import render from './renderer';
 
 const prepareContent = (filePath) => {
   const extension = path.extname(filePath);
@@ -12,11 +12,11 @@ const prepareContent = (filePath) => {
   return parse(content);
 };
 
-const genDiff = (firstPath, secondPath) => {
+const genDiff = (firstPath, secondPath, format) => {
   const firstContent = prepareContent(firstPath);
   const secondContent = prepareContent(secondPath);
   const generatedDiff = generateDiff(firstContent, secondContent);
-  return renderDiff(generatedDiff);
+  return render(format, generatedDiff);
 };
 
 export default genDiff;
