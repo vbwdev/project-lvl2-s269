@@ -29,8 +29,19 @@ const renderers = {
   unchanged: ({ key, value }, depth) => renderString(' ', key, value, depth),
 };
 
+const getStringRenderer = (type) => {
+  const render = renderers[type];
+  if (!render) {
+    throw new Error(`No renderer for type '${type}'`);
+  }
+  return render;
+};
+
 const renderDiffIter = (diff, depth = 0) => {
-  const strings = diff.map(item => renderers[item.type](item, depth, renderDiffIter), []);
+  const strings = diff.map((item) => {
+    const render = getStringRenderer(item.type);
+    return render(item, depth, renderDiffIter);
+  }, []);
   return renderObjectInner(strings, depth);
 };
 

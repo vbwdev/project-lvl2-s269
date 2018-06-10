@@ -24,9 +24,17 @@ const renderers = {
   unchanged: () => {},
 };
 
+const getStringRenderer = (type) => {
+  const render = renderers[type];
+  if (!render) {
+    throw new Error(`No renderer for type '${type}'`);
+  }
+  return render;
+};
+
 const renderDiffIter = (diff, parents = []) =>
   diff.reduce((acc, item) => {
-    const render = renderers[item.type];
+    const render = getStringRenderer(item.type);
     const renderedItem = render(item, parents, renderDiffIter);
     return renderedItem ? [...acc, renderedItem] : acc;
   }, []);
