@@ -20,15 +20,15 @@ const renderers = {
     `Property ${renderName(parents, key)} was added with ${renderValue(value, true)}`,
 
   deleted: ({ key }, parents) => `Property ${renderName(parents, key)} was removed`,
-
-  unchanged: () => {},
 };
 
 const renderDiffIter = (diff, parents = []) =>
   diff.reduce((acc, item) => {
     const render = renderers[item.type];
-    const renderedItem = render(item, parents, renderDiffIter);
-    return renderedItem ? [...acc, renderedItem] : acc;
+    if (!render) {
+      return acc;
+    }
+    return [...acc, render(item, parents, renderDiffIter)];
   }, []);
 
 const renderDiff = (diff) => {

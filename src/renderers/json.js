@@ -32,7 +32,13 @@ const renderers = {
 };
 
 const renderDiffIter = diff =>
-  diff.map(item => renderers[item.type](item, renderDiffIter), {});
+  diff.reduce((acc, item) => {
+    const render = renderers[item.type];
+    if (!render) {
+      return acc;
+    }
+    return [...acc, render(item, renderDiffIter)];
+  }, []);
 
 const renderDiff = diff => JSON.stringify(renderDiffIter(diff));
 
