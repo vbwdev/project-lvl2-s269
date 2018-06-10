@@ -31,19 +31,14 @@ const renderers = {
   }),
 };
 
-const getStringRenderer = (type) => {
-  const render = renderers[type];
-  if (!render) {
-    throw new Error(`No renderer for type '${type}'`);
-  }
-  return render;
-};
-
 const renderDiffIter = diff =>
-  diff.map((item) => {
-    const render = getStringRenderer(item.type);
-    return render(item, renderDiffIter);
-  }, {});
+  diff.reduce((acc, item) => {
+    const render = renderers[item.type];
+    if (!render) {
+      return acc;
+    }
+    return [...acc, render(item, renderDiffIter)];
+  }, []);
 
 const renderDiff = diff => JSON.stringify(renderDiffIter(diff));
 
