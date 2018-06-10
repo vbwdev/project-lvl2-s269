@@ -20,7 +20,7 @@ const renderers = {
   changed: ({ key, oldValue, newValue }, depth) => [
     renderString('+', key, newValue, depth),
     renderString('-', key, oldValue, depth),
-  ].join(''),
+  ],
 
   added: ({ key, value }, depth) => renderString('+', key, value, depth),
 
@@ -42,7 +42,8 @@ const renderDiffIter = (diff, depth = 0) => {
     const render = getStringRenderer(item.type);
     return render(item, depth, renderDiffIter);
   }, []);
-  return renderObjectInner(strings, depth);
+  const flattenedStrings = _.flatten(strings);
+  return renderObjectInner(flattenedStrings, depth);
 };
 
 const renderDiff = diff => renderDiffIter(diff, 0);
