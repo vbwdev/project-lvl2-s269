@@ -5,12 +5,13 @@ const getSpaces = depth => '    '.repeat(depth);
 const renderObjectInner = (values, depth) => `{\n${values.join('')}${getSpaces(depth)}}`;
 
 const renderString = (sign, key, value, depth) => {
-  if (_.isPlainObject(value)) {
-    const objectDepth = depth + 1;
-    const renderedItems = _.keys(value).map(objectKey => renderString(' ', objectKey, value[objectKey], objectDepth));
-    return renderString(sign, key, renderObjectInner(renderedItems, objectDepth), depth);
+  if (!_.isPlainObject(value)) {
+    return `${getSpaces(depth)}  ${sign} ${key}: ${value}\n`;
   }
-  return `${getSpaces(depth)}  ${sign} ${key}: ${value}\n`;
+
+  const objectDepth = depth + 1;
+  const renderedItems = _.keys(value).map(objectKey => renderString(' ', objectKey, value[objectKey], objectDepth));
+  return renderString(sign, key, renderObjectInner(renderedItems, objectDepth), depth);
 };
 
 const renderers = {
